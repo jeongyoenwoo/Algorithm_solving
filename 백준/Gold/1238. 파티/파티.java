@@ -4,9 +4,8 @@ import java.io.*;
 public class Main {
 
     public static int N, M, X;
-    public static ArrayList<ArrayList<Node>> list = new ArrayList<>();
-    public static int dist[];
-    public static boolean[] visited;
+    public static List<List<Node>> list, reverseList;
+    public static int[] dist, reverseDist;
 
     public static void main(String[] args) throws IOException {
 
@@ -17,9 +16,17 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
         X = Integer.parseInt(st.nextToken());
 
+        list = new ArrayList<>();
+        reverseList = new ArrayList<>();
         for (int i = 0; i <= N; i++) {
             list.add(new ArrayList<Node>());
+            reverseList.add(new ArrayList<Node>());
         }
+
+        dist = new int[N + 1];
+        reverseDist = new int[N + 1];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(reverseDist, Integer.MAX_VALUE);
 
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
@@ -29,27 +36,27 @@ public class Main {
             int weight = Integer.parseInt(st.nextToken());
 
             list.get(start).add(new Node(end, weight));
+            reverseList.get(end).add(new Node(start, weight));
         }
+
+        dijkstra(list, dist, X);
+        dijkstra(reverseList, reverseDist, X);
 
         int max = Integer.MIN_VALUE;
         for (int i = 1; i <= N; i++) {
-            if (i != X) {
-                max = Math.max(max, dijkstra(i, X) + dijkstra(X, i));
-            }
+            max = Math.max(max, dist[i] + reverseDist[i]);
         }
 
         System.out.println(max);
 
     }
 
-    public static int dijkstra(int start, int end) {
+    public static void dijkstra(List<List<Node>> list, int[] dist, int start) {
 
-        dist = new int[N + 1];
-        visited = new boolean[N + 1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-
+        boolean[] visited = new boolean[N + 1];
         PriorityQueue<Node> pq = new PriorityQueue<>();
         pq.add(new Node(start, 0));
+
         dist[start] = 0;
 
         while (!pq.isEmpty()) {
@@ -70,7 +77,6 @@ public class Main {
             }
         }
 
-        return dist[end];
     }
 
     public static class Node implements Comparable<Node> {
