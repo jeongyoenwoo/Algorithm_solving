@@ -2,76 +2,85 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int N;
-    static int D;
-    static int dist[];
 
-    public static void main(String[] args) throws IOException{
+    public static int N, D;
+    public static List<Node> list = new ArrayList<>();
+    public static int[] dist; // 지름길 길이 저장
+    public static int[] dp = new int[10001]; // 최단거리 저장
+
+    public static void main(String[] args) throws IOException {
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
         D = Integer.parseInt(st.nextToken());
 
-        List<Road> list = new ArrayList<>();
-        dist = new int[100001];
-        Arrays.fill(dist,100001);
+        dist = new int[D + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
 
-        for(int i=0;i<N;i++){
+        for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-
             int start = Integer.parseInt(st.nextToken());
             int end = Integer.parseInt(st.nextToken());
-            int cost = Integer.parseInt(st.nextToken());
+            int weight = Integer.parseInt(st.nextToken());
 
-            if(D<end) continue;
-            if(end-start<=cost) continue;
-            list.add(new Road(start, end, cost));
+            if (D < end)
+                continue;
+            if (end - start <= weight)
+                continue;
+
+            list.add(new Node(start, end, weight));
         }
 
-        Collections.sort(list, new Comparator<Road>() {
+        Collections.sort(list, new Comparator<Node>() {
             @Override
-            public int compare(Road o1, Road o2) {
-                if(o1.start == o2.start) return o1.end - o2.end;
+            public int compare(Node o1, Node o2) {
+                if (o1.start == o2.start)
+                    return o1.end - o2.end;
                 return o1.start - o2.start;
             }
         });
 
-        int index=0;
-        int move =0;
-
-        dist[0] = 0;
-
-        while(move<D){
-            if(index<list.size()){
-                Road r =list.get(index);
-                if(move == r.start){
-                    dist[r.end] = Math.min(dist[r.start] + r.cost,dist[r.end]);
-                    index++;
-                }
-                else{
-                    dist[move+1]  = Math.min(dist[move]+1,dist[move+1]);
-                    move++;
-                }
-            }else{
-                dist[move+1]  = Math.min(dist[move]+1,dist[move+1]);
-                    move++;
-            }
-
-        }
-
-        System.out.println(dist[D]);
+        dijkstra();
+        System.out.println(dp[D]);
     }
-    static class Road{
+
+    public static void dijkstra() {
+        int move = 0;
+        int index = 0;
+
+        while (move < D) {
+            if (index < list.size()) {
+                Node road = list.get(index);
+
+                if (move == road.start) {
+                    dp[road.end] = Math.min(dp[road.start] + road.weight, dp[road.end]);
+                    index++;
+                } else {
+                    dp[move + 1] = Math.min(dp[move] + 1, dp[move + 1]);
+                    move++;
+
+                }
+            } else {
+                dp[move + 1] = Math.min(dp[move] + 1, dp[move + 1]);
+                move++;
+            }
+        }
+    }
+
+    public static class Node {
         int start;
         int end;
-        int cost;
+        int weight;
 
-        public Road(int start, int end, int cost){
+        public Node(int start, int end, int weight) {
             this.start = start;
             this.end = end;
-            this.cost = cost;
+            this.weight = weight;
         }
+
     }
- 
+
 }
