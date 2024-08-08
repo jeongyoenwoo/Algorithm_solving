@@ -4,9 +4,9 @@ import java.io.*;
 public class Main {
 
     public static int N, M;
-    public static int[] num;
     public static int sum = 0;
-    public static int max = Integer.MIN_VALUE;
+    public static int[] lecture;
+    public static int maxLecture = Integer.MIN_VALUE;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,23 +15,21 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        num = new int[N];
+        lecture = new int[N];
 
         st = new StringTokenizer(br.readLine());
-
         for (int i = 0; i < N; i++) {
-            int n = Integer.parseInt(st.nextToken());
-            num[i] = n;
-            sum += n;
-            if (n > max)
-                max = n;
+            lecture[i] = Integer.parseInt(st.nextToken());
+            sum += lecture[i];
+
+            if (lecture[i] > maxLecture) {
+                maxLecture = lecture[i];
+            }
         }
-
-        System.out.println(lowerBound(max, sum));
-
+        System.out.println(binarySearch(maxLecture, sum));
     }
 
-    public static int lowerBound(int start, int end) {
+    public static int binarySearch(int start, int end) {
 
         while (start <= end) {
             int mid = (start + end) / 2;
@@ -51,13 +49,15 @@ public class Main {
         int remain = mid;
 
         for (int i = 0; i < N; i++) {
-            if (remain < num[i]) {
+            if (remain < lecture[i]) {
                 remain = mid;
                 count++;
             }
-            remain -= num[i];
+
+            remain -= lecture[i];
         }
 
         return count;
     }
+
 }
