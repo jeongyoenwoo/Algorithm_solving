@@ -2,43 +2,40 @@ import java.util.*;
 
 class Solution {
     public int solution(int bridge_length, int weight, int[] truck_weights) {
-        
+        int time = 0;      
+        int curWeight=0;
+        int index=0;
         Queue<Node> q = new LinkedList<>();
         
-        int curTime = 0;
-        int curWeight=0;
-        int curEnd=0;
-        int index=0;
         
         while(true){
             
-            if(curEnd==truck_weights.length) break;
-            
-            curTime++;
-            if(!q.isEmpty()&&q.peek().time+bridge_length==curTime){
-                Node n = q.poll();
-                curWeight -= n.weight;
-                curEnd++;
+            time++;
+
+            if(!q.isEmpty()&&q.peek().time+bridge_length==time) {
+                curWeight-=q.peek().weight;
+                q.poll();
             }
-            
+            if(index==truck_weights.length&&q.isEmpty()){
+                break;
+            }
             if(index<truck_weights.length&&curWeight+truck_weights[index]<=weight){
-                curWeight += truck_weights[index];
-                q.offer(new Node(curTime,truck_weights[index]));
-                index++;
+                curWeight+=truck_weights[index];
+                q.offer(new Node(truck_weights[index++],time));
             }
             
         }
         
-        return curTime;
+        return time;
     }
     
     public static class Node{
-        int time;
         int weight;
+        int time;
         
-        public Node(int time, int weight){
+        public Node(int weight, int time){
+            this.weight = weight;
             this.time = time;
-            this .weight = weight;
         }
     }
 }
