@@ -1,0 +1,5 @@
+select ID, EMAIL, FIRST_NAME, LAST_NAME
+FROM DEVELOPERS D
+where D.SKILL_CODE &(select CODE from SKILLCODES where NAME='Python')
+OR D.SKILL_CODE &(select CODE from SKILLCODES where NAME='C#')
+ORDER BY ID;
