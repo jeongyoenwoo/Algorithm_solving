@@ -1,4 +1,6 @@
-select ITEM_ID, ITEM_NAME
-from ITEM_INFO join ITEM_TREE using(ITEM_ID)
-where PARENT_ITEM_ID is null
-order by item_id
+select I.ITEM_ID, I.ITEM_NAME
+from ITEM_INFO I
+join ITEM_TREE T
+on I.ITEM_ID = T.ITEM_ID
+where T.PARENT_ITEM_ID is null
+order by I.ITEM_ID;
