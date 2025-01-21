@@ -26,23 +26,30 @@ public class Main {
 
         M = Integer.parseInt(br.readLine());
 
-        while (true) {
-            int sum = 0;
+        int left = 0;
+        int right = max;
+        int mid = 0;
+
+        while (left <= right) {
+            mid = (left + right) / 2;
+
+            int budget = 0;
 
             for (int i = 0; i < N; i++) {
-                if (max >= arr[i]) {
-                    sum += arr[i];
+                if (arr[i] > mid) {
+                    budget += mid;
                 } else {
-                    sum += max;
+                    budget += arr[i];
                 }
             }
 
-            if (sum <= M)
-                break;
-            else
-                max--;
+            if (budget <= M) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
         }
 
-        System.out.println(max);
+        System.out.println(right);
     }
 }
